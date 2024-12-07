@@ -4,16 +4,15 @@
 int main()
 {
 
-    bigint test1;
-    std::cout << test1 << "\n";
+    // open test data file
+    // loop through tests
+    //   check if result matches expected result
+    //   log answer
 
-    bigint test2(1234);
-    std::cout << test2 << "\n";
+    bigint x1(8234);
+    bigint x2(-78);
 
-    bigint test3(-1E16);
-    std::cout << test3 << "\n";
-
-    std::cout << "Hello World!\n";
+    std::cout << x1 * x2 << "\n";
 
     return 0;
 }
