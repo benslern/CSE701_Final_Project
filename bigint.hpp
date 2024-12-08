@@ -42,10 +42,14 @@ public:
         try
         {
             isNeg = false;
-            if (stoi(value) < 0)
+            if (value[0] == '-')
             {
                 isNeg = true;
                 value.erase(0, 1);
+            }
+            while (value.at(0) == '0' && value.length() > 1)
+            {
+                value = value.substr(1, value.length() - 1);
             }
             for (size_t i = 0; i < value.length(); i++)
             {
@@ -222,13 +226,13 @@ bigint operator+(const bigint &operand1, const bigint &operand2)
     {
         bigint temp = operand1;
         temp.isNeg = false;
-        return operand2 - operand1;
+        return (operand2 - temp);
     }
     if (!operand1.isNeg && operand2.isNeg)
     {
         bigint temp = operand2;
         temp.isNeg = false;
-        return operand1 - operand2;
+        return (operand1 - temp);
     }
 
     uint8_t carry = 0;
@@ -295,10 +299,17 @@ bigint operator*(const bigint &operand1, const bigint &operand2)
         }
     }
 
-    if(operand1.isNeg != operand2.isNeg){
+    if (operand1.isNeg != operand2.isNeg)
+    {
         result.isNeg = true;
     }
     return result;
+}
+
+bigint operator*=(bigint &operand1, const bigint &operand2)
+{
+    operand1 = operand1 * operand2;
+    return operand1;
 }
 
 // Operator Overload (-)
@@ -345,7 +356,17 @@ bigint operator-(const bigint &operand1, const bigint &operand2)
             if (num1.at(i - 1) < num2.at(i - 1))
             {
                 num1.at(i - 1) += 10;
-                num1.at(i - 2) = (num1.at(i - 2) - 1) % 10;
+                num1.at(i - 2) -= 1;
+                bool steal = (num1.at(i - 2) == 255);
+                int64_t index = 2;
+                while (steal)
+                {
+                    num1.at(i - index) = num1.at(i - index) + 10;
+                    index += 1;
+                    int8_t temp = num1.at(i - index) - 1;
+                    num1.at(i - index) = (temp) % 10;
+                    steal = (temp < 0);
+                }
             }
             uint8_t x = num1.at(i - 1) - num2.at(i - 1);
             value += std::to_string(x);
@@ -353,7 +374,7 @@ bigint operator-(const bigint &operand1, const bigint &operand2)
 
         while (value.at(value.length() - 1) == '0' && value.length() > 1)
         {
-            value = value.substr(value.length() - 1, 1);
+            value = value.substr(0, value.length() - 1);
         }
     }
     else
