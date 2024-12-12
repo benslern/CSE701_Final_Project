@@ -13,14 +13,18 @@ class bigint
 public:
     // Public members
 
-    // Default Constructor
+    /**
+     * @brief Default Constructor. Construct a new bigint object with value 0.
+     */
     bigint()
     {
         number.push_back(0);
         isNeg = false;
     }
 
-    // Signed 64-bit Integer Constructor
+    /**
+     * @brief Signed 64-bit Integer Constructor. Construct a new bigint object with a int64_t value.
+     */
     bigint(int64_t value)
     {
         isNeg = (value < 0);
@@ -36,7 +40,9 @@ public:
         std::reverse(number.begin(), number.end());
     }
 
-    // String Constructor
+    /**
+     * @brief String Constructor. Construct a new bigint object with a std::string value.
+     */
     bigint(std::string value)
     {
         try
@@ -63,6 +69,8 @@ public:
         }
     }
 
+    // Friend function declerations
+
     friend std::ostream &operator<<(std::ostream &, const bigint &);
     friend bool operator==(const bigint &, const bigint &);
     friend bool operator<(const bigint &, const bigint &);
@@ -74,14 +82,22 @@ public:
 private:
     // Private members
 
-    // Store the number as a vector of 8-bit unsigned integers
+    // Store the number as a vector of 8-bit unsigned integers.
     std::vector<uint8_t> number;
+
+    // boolean is true if the bigint is negative, otherwise false.
     bool isNeg;
 };
 
-// Operator Overload (<<)
 // DOUBLE CHECK I CAN DO THIS
 // Using the Operator Overload from the notes
+/**
+ * @brief Overload the << operator for bigints. Returns a std::ostream of the operand.
+ *
+ * @param out
+ * @param operand
+ * @return std::ostream&
+ */
 std::ostream &operator<<(std::ostream &out, const bigint &operand)
 {
     if (operand.isNeg)
@@ -96,17 +112,27 @@ std::ostream &operator<<(std::ostream &out, const bigint &operand)
     return out;
 }
 
-// Operator Overload (==)
+/**
+ * @brief Overload the == operator for bigints. Returns true if operand1 == operand2, otherwise false.
+ *
+ * @param operand1
+ * @param operand2
+ * @return true
+ * @return false
+ */
 bool operator==(const bigint &operand1, const bigint &operand2)
 {
+    // Optimization: return false if operands do not have the same number of digits
     if (operand1.number.size() != operand2.number.size())
     {
         return false;
     }
+    // Optimization: return false if operands have different signs
     if (operand1.isNeg != operand2.isNeg)
     {
         return false;
     }
+    // check if digits in operands are the same
     for (size_t i = 0; i < operand1.number.size(); i++)
     {
         if (operand1.number.at(i) != operand2.number.at(i))
@@ -117,27 +143,50 @@ bool operator==(const bigint &operand1, const bigint &operand2)
     return true;
 }
 
+/**
+ * @brief Overload the != operator for bigints. Return true if operand1 != operand2, otherwise false.
+ *
+ * @param operand1
+ * @param operand2
+ * @return true
+ * @return false
+ */
 bool operator!=(const bigint &operand1, const bigint &operand2)
 {
+    //!= is logically equivalent to the negation of the == operator
     return !(operand1 == operand2);
 }
 
+/**
+ * @brief Overload the < operator for bigints. Return true if operand1 < operand2, otherwise false.
+ *
+ * @param operand1
+ * @param operand2
+ * @return true
+ * @return false
+ */
 bool operator<(const bigint &operand1, const bigint &operand2)
 {
+    // Optimization: return true if operand1 is negative and operand2 is positive.
     if (operand1.isNeg && !operand2.isNeg)
     {
         return true;
     }
+    // Optimization: return false if operand1 is positive and operand2 is negative.
     if (!operand1.isNeg && operand2.isNeg)
     {
         return false;
     }
     if (!operand1.isNeg && !operand2.isNeg)
     {
+        // Optimization: return true if both operands are positive
+        // and operand1 has fewer digits than operand 2.
         if (operand1.number.size() < operand2.number.size())
         {
             return true;
         }
+        // Optimization: return false if both operands are positive
+        // and operand1 has more digits than operand 2.
         if (operand1.number.size() > operand2.number.size())
         {
             return false;
@@ -161,10 +210,14 @@ bool operator<(const bigint &operand1, const bigint &operand2)
     }
     if (operand1.isNeg && operand2.isNeg)
     {
+        // Optimization: return true if both operands are negative
+        // and operand1 has more digits than operand 2.
         if (operand1.number.size() > operand2.number.size())
         {
             return true;
         }
+        // Optimization: return false if both operands are negative
+        // and operand1 has fewer digits than operand 2.
         if (operand1.number.size() < operand2.number.size())
         {
             return false;
@@ -194,31 +247,66 @@ bool operator<(const bigint &operand1, const bigint &operand2)
 }
 
 // Operator Overload (<=)
+/**
+ * @brief Overload the <= operator for bigints. Returns true if operand1 <= operand2, otherwise false.
+ *
+ * @param operand1
+ * @param operand2
+ * @return true
+ * @return false
+ */
 bool operator<=(const bigint &operand1, const bigint &operand2)
 {
     return (operand1 < operand2 || operand1 == operand2);
 }
 
-// Operator Overload (>)
+/**
+ * @brief Overload the > operator for bigints. Returns true if operand1 > operand2, otherwise false.
+ *
+ * @param operand1
+ * @param operand2
+ * @return true
+ * @return false
+ */
 bool operator>(const bigint &operand1, const bigint &operand2)
 {
+    // a>b is logically equivalent to the negation of (a==b or a<b)
     return !(operand1 == operand2 || operand1 < operand2);
 }
 
-// Operator Overload (>=)
+/**
+ * @brief Overload the >= operator for bigints. Returns true if operand1 >= operand2, otherwise false.
+ *
+ * @param operand1
+ * @param operand2
+ * @return true
+ * @return false
+ */
 bool operator>=(const bigint &operand1, const bigint &operand2)
 {
+    // Computationally less expensive to check just < than (> and ==)
     return !(operand1 < operand2);
 }
 
-// Operator Overload (-)
+/**
+ * @brief Overload the - unary operator for bigints. Returns the negative of the operand.
+ *
+ * @param operand
+ * @return bigint
+ */
 bigint operator-(bigint &operand)
 {
     operand.isNeg = !operand.isNeg;
     return operand;
 }
 
-// Operator Overload (+)
+/**
+ * @brief Overload the + operator for bigints. Returns the sum of operand1 and operand2.
+ *
+ * @param operand1
+ * @param operand2
+ * @return bigint
+ */
 bigint operator+(const bigint &operand1, const bigint &operand2)
 {
 
@@ -276,6 +364,14 @@ bigint operator+(const bigint &operand1, const bigint &operand2)
     return result;
 }
 
+/**
+ * @brief Overload the += operator for bigints. Sets operand1 to the
+ * sum operand1+operand2 and returns operand1.
+ *
+ * @param operand1
+ * @param operand2
+ * @return bigint
+ */
 bigint operator+=(bigint &operand1, const bigint &operand2)
 {
     operand1 = operand1 + operand2;
@@ -283,6 +379,13 @@ bigint operator+=(bigint &operand1, const bigint &operand2)
 }
 
 // Operator Overload (*)
+/**
+ * @brief Overload the * operator for bigints. Returns the product operand1*operand2.
+ *
+ * @param operand1
+ * @param operand2
+ * @return bigint
+ */
 bigint operator*(const bigint &operand1, const bigint &operand2)
 {
     bigint result;
@@ -291,21 +394,33 @@ bigint operator*(const bigint &operand1, const bigint &operand2)
         for (size_t j = 0; j < operand2.number.size(); j++)
         {
             // std::cout << i << " " << j << "\n";
-            int64_t term1 = (operand1.number.at(i) * static_cast<int64_t>(pow(10, static_cast<double>(operand1.number.size() - i - 1))));
-            int64_t term2 = (operand2.number.at(j) * static_cast<int64_t>(pow(10, static_cast<double>(operand2.number.size() - j - 1))));
-            bigint temp(term1 * term2);
-            // std::cout << temp << "\n";
+            int64_t term1 = (operand1.number.at(i)); //* static_cast<int64_t>(pow(10, static_cast<double>(operand1.number.size() - i - 1))));
+            int64_t term2 = (operand2.number.at(j)); //* static_cast<int64_t>(pow(10, static_cast<double>(operand2.number.size() - j - 1))));
+            std::string prefix = std::to_string(term1*term2);
+            size_t limit = (operand1.number.size() - i - 1) + (operand2.number.size() - j - 1);
+            for(size_t k=0;k<limit;k++){
+                prefix += "0";
+            }
+            bigint temp(prefix);
             result += temp;
         }
     }
 
-    if (operand1.isNeg != operand2.isNeg)
+    if (operand1.isNeg != operand2.isNeg && result!=0)
     {
         result.isNeg = true;
     }
     return result;
 }
 
+/**
+ * @brief Overload the *= operator for bigints. Sets operand1 to the
+ * product operand1*operand2 and returns operand1.
+ *
+ * @param operand1
+ * @param operand2
+ * @return bigint
+ */
 bigint operator*=(bigint &operand1, const bigint &operand2)
 {
     operand1 = operand1 * operand2;
@@ -313,6 +428,13 @@ bigint operator*=(bigint &operand1, const bigint &operand2)
 }
 
 // Operator Overload (-)
+/**
+ * @brief Overload the - binary operator for bigints. Returns the difference operand1-operand2.
+ *
+ * @param operand1
+ * @param operand2
+ * @return bigint
+ */
 bigint operator-(const bigint &operand1, const bigint &operand2)
 {
     if (operand1.isNeg && !operand2.isNeg)
@@ -358,13 +480,13 @@ bigint operator-(const bigint &operand1, const bigint &operand2)
                 num1.at(i - 1) += 10;
                 num1.at(i - 2) -= 1;
                 bool steal = (num1.at(i - 2) == 255);
-                int64_t index = 2;
+                size_t index = 2;
                 while (steal)
                 {
                     num1.at(i - index) = num1.at(i - index) + 10;
                     index += 1;
                     int8_t temp = num1.at(i - index) - 1;
-                    num1.at(i - index) = (temp) % 10;
+                    num1.at(i - index) = static_cast<uint8_t>(temp % 10);
                     steal = (temp < 0);
                 }
             }
@@ -389,12 +511,27 @@ bigint operator-(const bigint &operand1, const bigint &operand2)
     return result;
 }
 
+/**
+ * @brief Overload the += operator for bigints. Sets operand1 to the
+ * difference operand1-operand2 and returns operand1.
+ *
+ * @param operand1
+ * @param operand2
+ * @return bigint
+ */
 bigint operator-=(bigint &operand1, const bigint &operand2)
 {
     operand1 = operand1 - operand2;
     return operand1;
 }
 
+/**
+ * @brief Overload the ++ postfix operator for bigints. Increment operand1 by one
+ * and return original value of operand1
+ *
+ * @param operand1
+ * @return bigint
+ */
 bigint operator++(bigint &operand1, int)
 {
     bigint result = operand1;
@@ -402,12 +539,26 @@ bigint operator++(bigint &operand1, int)
     return result;
 }
 
+/**
+ * @brief Overload the ++ prefix operator for bigints. Increment operand1 by one
+ * and return operand1
+ *
+ * @param operand1
+ * @return bigint
+ */
 bigint operator++(bigint &operand1)
 {
     operand1 += 1;
     return operand1;
 }
 
+/**
+ * @brief Overload the -- postfix operator for bigints. Decrement operand1 by one
+ * and return original value of operand1
+ *
+ * @param operand1
+ * @return bigint
+ */
 bigint operator--(bigint &operand1, int)
 {
     bigint result = operand1;
@@ -415,6 +566,13 @@ bigint operator--(bigint &operand1, int)
     return result;
 }
 
+/**
+ * @brief Overload the ++ postfix operator for bigints. Decrement operand1 by one
+ * and return operand1
+ *
+ * @param operand1
+ * @return bigint
+ */
 bigint operator--(bigint &operand1)
 {
     operand1 -= 1;
