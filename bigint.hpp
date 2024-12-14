@@ -389,24 +389,26 @@ bigint operator+=(bigint &operand1, const bigint &operand2)
 bigint operator*(const bigint &operand1, const bigint &operand2)
 {
     bigint result;
-    for (size_t i = 0; i < operand1.number.size(); i++)
+    size_t size1 = operand1.number.size();
+    size_t size2 = operand2.number.size();
+    for (size_t i = 0; i < size1; i++)
     {
-        for (size_t j = 0; j < operand2.number.size(); j++)
+        for (size_t j = 0; j < size2; j++)
         {
-            // std::cout << i << " " << j << "\n";
-            int64_t term1 = (operand1.number.at(i)); //* static_cast<int64_t>(pow(10, static_cast<double>(operand1.number.size() - i - 1))));
-            int64_t term2 = (operand2.number.at(j)); //* static_cast<int64_t>(pow(10, static_cast<double>(operand2.number.size() - j - 1))));
-            std::string prefix = std::to_string(term1*term2);
-            size_t limit = (operand1.number.size() - i - 1) + (operand2.number.size() - j - 1);
-            for(size_t k=0;k<limit;k++){
-                prefix += "0";
-            }
+            uint8_t term1 = (operand1.number.at(i)); //* static_cast<int64_t>(pow(10, static_cast<double>(operand1.number.size() - i - 1))));
+            uint8_t term2 = (operand2.number.at(j)); //* static_cast<int64_t>(pow(10, static_cast<double>(operand2.number.size() - j - 1))));
+            std::string prefix = std::to_string(term1 * term2);
+            //size_t limit = (size1 - i - 1) + (size2 - j - 1);
+            //for(size_t k=0;k<limit;k++){
+            //    prefix += "0";
+            //}
+            prefix += std::string((size1 - i - 1) + (size2 - j - 1),'0');
             bigint temp(prefix);
             result += temp;
         }
     }
 
-    if (operand1.isNeg != operand2.isNeg && result!=0)
+    if (operand1.isNeg != operand2.isNeg && result != 0)
     {
         result.isNeg = true;
     }
