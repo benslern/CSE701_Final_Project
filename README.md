@@ -27,7 +27,9 @@ The following sections describe the algorithms used to override the various oper
 `
 **Brief:**
 **Param:** bigint operand1
+
 **Param:** bigint operand2
+
 **Return:** bigint
 
 ### += Operator Overload
