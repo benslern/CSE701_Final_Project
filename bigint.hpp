@@ -24,16 +24,16 @@ public:
 
     /**
      * @brief Signed 64-bit Integer Constructor. Construct a new bigint object with a int64_t value.
+     * @param int64_t value 
      */
     bigint(int64_t value)
     {
         isNeg = (value < 0);
-        value = abs(value);
         do
         {
-            number.push_back(static_cast<uint8_t>(value % 10));
+            number.push_back(static_cast<uint8_t>(abs(value % 10)));
             value /= 10;
-        } while (value >= 1);
+        } while (abs(value) >= 1);
 
         // https: // www.reddit.com/r/cpp/comments/gctyw5/adding_two_uint16_t_s_without_wconversion_warning/
         // https://stackoverflow.com/questions/8877448/how-do-i-reverse-a-c-vector
@@ -45,21 +45,36 @@ public:
      */
     bigint(std::string value)
     {
+        // https://stackoverflow.com/questions/83439/remove-spaces-from-stdstring-in-c
         try
         {
+            if (value.length() == 0)
+            {
+                throw std::invalid_argument("Error: Invalid String - (" + value + ")\n");
+            }
             isNeg = false;
             if (value[0] == '-')
-            {
+            {   
                 isNeg = true;
                 value.erase(0, 1);
+                
             }
-            while (value.at(0) == '0' && value.length() > 1)
+            while ((value.at(0) == '0' || value.at(0) == ' ') && value.length() > 1)
             {
                 value = value.substr(1, value.length() - 1);
             }
+            while ((value.at(value.length() - 1) == ' ') && value.length() > 1)
+            {
+                value = value.substr(0, value.length() - 1);
+            }
+            if (value.length() == 1 && value[0] == '0'){
+                isNeg = false;
+            }
             for (size_t i = 0; i < value.length(); i++)
             {
-                number.push_back(static_cast<uint8_t>(value[i] - '0'));
+                std::string s(1, value[i]);
+                // number.push_back(static_cast<uint8_t>(value[i] - '0'));
+                number.push_back(static_cast<uint8_t>(std::stoi(s)));
             }
             // https://stackoverflow.com/questions/5029840/convert-char-to-int-in-c-and-c
         }
@@ -109,6 +124,7 @@ std::ostream &operator<<(std::ostream &out, const bigint &operand)
         out << unsigned(vec.at(i));
     // https://stackoverflow.com/questions/19562103/uint8-t-cant-be-printed-with-cout
     out << unsigned(operand.number.at(operand.number.size() - 1));
+
     return out;
 }
 
@@ -296,7 +312,10 @@ bool operator>=(const bigint &operand1, const bigint &operand2)
  */
 bigint operator-(bigint &operand)
 {
-    operand.isNeg = !operand.isNeg;
+    bigint zero;
+    if(operand!=zero){
+        operand.isNeg = !operand.isNeg;
+    }
     return operand;
 }
 
@@ -398,11 +417,11 @@ bigint operator*(const bigint &operand1, const bigint &operand2)
             uint8_t term1 = (operand1.number.at(i)); //* static_cast<int64_t>(pow(10, static_cast<double>(operand1.number.size() - i - 1))));
             uint8_t term2 = (operand2.number.at(j)); //* static_cast<int64_t>(pow(10, static_cast<double>(operand2.number.size() - j - 1))));
             std::string prefix = std::to_string(term1 * term2);
-            //size_t limit = (size1 - i - 1) + (size2 - j - 1);
-            //for(size_t k=0;k<limit;k++){
-            //    prefix += "0";
-            //}
-            prefix += std::string((size1 - i - 1) + (size2 - j - 1),'0');
+            // size_t limit = (size1 - i - 1) + (size2 - j - 1);
+            // for(size_t k=0;k<limit;k++){
+            //     prefix += "0";
+            // }
+            prefix += std::string((size1 - i - 1) + (size2 - j - 1), '0');
             bigint temp(prefix);
             result += temp;
         }

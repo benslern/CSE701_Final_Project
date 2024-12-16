@@ -32,6 +32,7 @@ The following sections describe the algorithms used to override the various oper
 
 **Return:** bigint
 
+
 ### += Operator Overload
 
 **Declaration:**`bigint operator+=(bigint &operand1, const bigint &operand2)`
@@ -191,3 +192,36 @@ FULL DESCRIPTION OF ALGORITHM
 **Return:** bigint
 
 FULL DESCRIPTION OF ALGORITHM
+
+
+## Testing
+
+The bigint class and associated operators are tested in three ways. Constructor tests, random operator tests, and custom operator tests. The goal is to conduct comprehensive tests on each component of the bigint implementation.
+
+## Constructor Tests
+
+The constructor
+
+There are three constructors, the default constructor, the int64_t constructor, and the std::string constructor.
+
+### The Default Constructor
+**Declaration:**`bigint()`
+**Brief:** Default Constructor. Construct a new bigint object with value 0.
+
+The default constructor takes no arguments and creates a new bigint object with a value of 0.
+
+### The int64_t Constructor
+**Declaration:**`bigint(int64_t value)`
+**Brief:** Signed 64-bit Integer Constructor. Construct a new bigint object with a int64_t value.
+**Param:** int64_t value 
+
+The int64_t constructor takes an int64_t argument and creates a new bigint object with the value of the int64_t argument.
+
+INT64_MAX and INT64_MIN
+
+also allows to create a bigint using scientific notation provided that the input value is within the range INT64_MIN to INT64_MAX inclusive.
+
+## Random Operator Tests
+
+## Custom Operator Tests
+
