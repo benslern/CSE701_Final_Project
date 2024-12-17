@@ -4,13 +4,23 @@
 #include <fstream>
 #include <stdexcept>
 
+// To test each operator I created a run_operator_test function that runs
+// a given test function on all the test files from a single directory.
+// The test function must take a std::vector<bigint> as its only input.
 // https://www.geeksforgeeks.org/passing-a-function-as-a-parameter-in-cpp/
+
+// To get all of the files from a directory path I used the iterator from this link.
+// https://stackoverflow.com/questions/612097/how-can-i-get-the-list-of-files-in-a-directory-using-c-or-c
+
+// To read in the numbers from each file I used the example from
+// section 5.3.2 of the Lecture notes
+
 /**
  * @brief Run the test function on each test file from a given directory.
  * Return the number of successful tests.
  *
- * @param path
- * @param test
+ * @param std::string path
+ * @param function test
  * @return uint8_t
  */
 uint32_t run_operator_tests(const std::string &path, bool (*test)(const std::vector<bigint> &), const std::string op)
@@ -18,10 +28,10 @@ uint32_t run_operator_tests(const std::string &path, bool (*test)(const std::vec
     std::cout << "Testing " << op << " Operator\n";
     uint32_t test_pass_count = 0;
     uint32_t num_tests = 0;
-    // Loop through all test files from the directory path
-    // https://stackoverflow.com/questions/612097/how-can-i-get-the-list-of-files-in-a-directory-using-c-or-c
+
     try
     {
+        // Loop through all test files from the directory path
         for (const auto &file : std::filesystem::directory_iterator(path))
         {
             // Open file
@@ -41,7 +51,7 @@ uint32_t run_operator_tests(const std::string &path, bool (*test)(const std::vec
             }
             input.close();
 
-            // Pass numbers to test function and increment if it passes
+            // Pass numbers from file to test function and increment if it passes
             if (test(numbers))
             {
                 test_pass_count++;
@@ -51,7 +61,7 @@ uint32_t run_operator_tests(const std::string &path, bool (*test)(const std::vec
     }
     catch (std::filesystem::filesystem_error e)
     {
-        throw std::invalid_argument("Direcotry does not exist or cannot be opened.");
+        throw std::invalid_argument("Directory does not exist or cannot be accessed.");
     }
 
     // Return number of successful tests
@@ -63,7 +73,7 @@ uint32_t run_operator_tests(const std::string &path, bool (*test)(const std::vec
  * @brief Run tests on + and += operators. Input vector must contain three bigints
  * where the third bigint is the sum of the first two bigints.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -96,11 +106,10 @@ bool basic_addition_test(const std::vector<bigint> &input)
 }
 
 /**
- * @brief Run tests on - and -= operators. input vector contains two bigints,
- * which were randomly generated using a Python script, and a third bigint that
- * is the difference of the two random bigints.
+ * @brief Run tests on - and -= operators. input vector must contain three bigints
+ * where the third bigint is the difference of the first two bigints.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -130,11 +139,10 @@ bool basic_subtraction_test(const std::vector<bigint> &input)
 }
 
 /**
- * @brief Run tests on * and *= operators. input vector contains two bigints,
- * which were randomly generated using a Python script, and a third bigint that
- * is the product of the two random bigints.
+ * @brief Run tests on * and *= operators. input vector must contain three bigints
+ * where the third bigint is the product of the first two bigints.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -167,11 +175,10 @@ bool basic_multiplication_test(const std::vector<bigint> &input)
 }
 
 /**
- * @brief Run tests on - unary operator. input vector contains one bigint,
- * which was randomly generated using a Python script, and a second bigint that
- * is the negative of the random bigint.
+ * @brief Run tests on - unary operator. input vector must contain two bigints
+ * where the second bigint is the negative of the first bigint.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -193,11 +200,10 @@ bool basic_negation_test(const std::vector<bigint> &input)
 }
 
 /**
- * @brief Run tests on ++ pre operator. input vector contains one bigint,
- * which was randomly generated using a Python script, and a second bigint that
- * is the random bigint+1.
+ * @brief Run tests on ++ pre operator. input vector must contain two bigints
+ * where the second bigint is the first bigint plus one.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -219,11 +225,10 @@ bool basic_pp_pre_test(const std::vector<bigint> &input)
 }
 
 /**
- * @brief Run tests on ++ post operator. input vector contains one bigint,
- * which was randomly generated using a Python script, and a second bigint that
- * is the random bigint+1.
+ * @brief Run tests on ++ post operator. input vector must contain two bigints
+ * where the second bigint is the first bigint plus one.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -245,11 +250,10 @@ bool basic_pp_post_test(const std::vector<bigint> &input)
 }
 
 /**
- * @brief Run tests on -- pre operator. input vector contains one bigint,
- * which was randomly generated using a Python script, and a second bigint that
- * is the random bigint-1.
+ * @brief Run tests on -- pre operator. input vector must contain two bigints
+ * where the second bigint is the first bigint minus one.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -271,11 +275,10 @@ bool basic_mm_pre_test(const std::vector<bigint> &input)
 }
 
 /**
- * @brief Run tests on -- post operator. input vector contains one bigint,
- * which was randomly generated using a Python script, and a second bigint that
- * is the random bigint-1.
+ * @brief Run tests on -- post operator. input vector must contain two bigints
+ * where the second bigint is the first bigint minus one.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -297,9 +300,9 @@ bool basic_mm_post_test(const std::vector<bigint> &input)
 }
 
 /**
- * @brief Run tests on == operator. Input vector contains two bigints that are identical.
+ * @brief Run tests on ==, <=, and >= operators. Input vector must contain two bigints that are identical.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -329,9 +332,9 @@ bool basic_eq_test(const std::vector<bigint> &input)
 }
 
 /**
- * @brief Run tests on != operator. Input vector contains two bigints that are not identical.
+ * @brief Run tests on != operator. Input vector must contain two bigints that are not identical.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -351,10 +354,10 @@ bool basic_neq_test(const std::vector<bigint> &input)
 }
 
 /**
- * @brief Run tests on != operator. Input vector contains two bigints.
- * Returns true if the first is less than the second, otherwise false.
+ * @brief Run tests on < and <= operators. Input vector must contain two bigints
+ * where the first bigint is less than the second bigint.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -379,10 +382,10 @@ bool basic_lt_test(const std::vector<bigint> &input)
 }
 
 /**
- * @brief Run tests on != operator. Input vector contains two bigints.
- * Returns true if the first is greater than the second, otherwise false.
+ * @brief Run tests on > and >= operators. Input vector must contain two bigints
+ * where the first bigint is greater than the second bigint.
  *
- * @param input
+ * @param std::vector<bigint> input
  * @return true
  * @return false
  */
@@ -406,6 +409,14 @@ bool basic_gt_test(const std::vector<bigint> &input)
     return true;
 }
 
+/**
+ * @brief Run tests on the bigint String Constructor.
+ * exp is a string of the expected bigint value.
+ * input is a string argument for bigint.
+ *
+ * @param std::string exp
+ * @param std::string input
+ */
 void run_constructor_test(std::string exp, std::string input)
 {
     std::cout << "Expected bigint Value: " << exp << "\n";
@@ -420,6 +431,14 @@ void run_constructor_test(std::string exp, std::string input)
     }
 }
 
+/**
+ * @brief Run tests on the bigint int64_t Constructor.
+ * exp is a string of the expected bigint value.
+ * input is a int64_t argument for bigint.
+ *
+ * @param std::string exp
+ * @param int64_t input
+ */
 void run_constructor_test(std::string exp, int64_t input = 0)
 {
     std::cout << "Expected bigint Value: " << exp << "\n";
@@ -427,6 +446,12 @@ void run_constructor_test(std::string exp, int64_t input = 0)
     std::cout << "Actual bigint Value:   " << test << "\n\n";
 }
 
+/**
+ * @brief Run tests on the bigint default Constructor.
+ *
+ * @param std::string exp
+ * @param int64_t input
+ */
 void run_constructor_test()
 {
     std::cout << "Expected bigint Value: 0\n";
@@ -434,6 +459,11 @@ void run_constructor_test()
     std::cout << "Actual bigint Value:   " << test << "\n\n";
 }
 
+/**
+ * @brief Main function that runs all of the tests.
+ *
+ * @return int
+ */
 int main()
 {
 
@@ -482,7 +512,7 @@ int main()
     run_constructor_test("Error: Invalid String", "--123456789");
     run_constructor_test("Error: Invalid String", "1.234E8");
     run_constructor_test("Error: Invalid String", "-1.234E8");
-    run_constructor_test("Error: Invalid String","  -001  ");
+    run_constructor_test("Error: Invalid String", "  -001  ");
 
     // Operator Tests
     uint32_t test_pass = 0;
