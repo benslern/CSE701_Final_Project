@@ -482,6 +482,7 @@ int main()
     run_constructor_test("Error: Invalid String", "--123456789");
     run_constructor_test("Error: Invalid String", "1.234E8");
     run_constructor_test("Error: Invalid String", "-1.234E8");
+    run_constructor_test("Error: Invalid String","  -001  ");
 
     // Operator Tests
     uint32_t test_pass = 0;

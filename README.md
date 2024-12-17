@@ -52,6 +52,12 @@ The += operator overload makes use of the + operator to avoid rewriting code. It
 **Return:** bigint
 
 FULL DESCRIPTION OF ALGORITHM
+ To simplify the code the - operator overload only computes
+    the difference operand1-operand2 when operand1 and operand2 
+    are both positive and operand1>=operand2. When one or both is 
+    negative it is simpler to convert the difference to a 
+    mathematically equivalent form in which they are both positive.
+    When operand2>operand1 it is simpler to return -(operand2-operand1).
 
 ### -= Operator Overload
 **Declaration:**`bigint operator-=(bigint &operand1, const bigint &operand2)`
@@ -220,6 +226,14 @@ The int64_t constructor takes an int64_t argument and creates a new bigint objec
 INT64_MAX and INT64_MIN
 
 also allows to create a bigint using scientific notation provided that the input value is within the range INT64_MIN to INT64_MAX inclusive.
+
+### The String Constructor
+The string can contain an integer with an arbitrary number of digits.
+     * The constructor allow for leading at tailing spaces, and leading zeros.
+     * The string cannot contain any symbols apart from a single '-' at the beginning to indicate a negative integer.
+     * The string cannot contain any letters.
+     * The string cannot be empty.
+
 
 ## Random Operator Tests
 
