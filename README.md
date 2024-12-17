@@ -20,7 +20,7 @@
      * [-= Operator Overload](#--operator-overload-1)
      * [* Operator Overload](#-operator-overload-2)
      * [*= Operator Overload](#-operator-overload-3)
-     * [- Operator Overload](#--operator-overload-1)
+     * [- Operator Overload](#--operator-overload-2)
 
      * [== Operator Overload](#-operator-overload-4)
      * [!= Operator Overload](#-operator-overload-5)
