@@ -214,20 +214,20 @@ bool operator<(const bigint &operand1, const bigint &operand2)
         // convert ((neg_op1)<(neg_op2)) to ((pos_op2)<(pos_op1))
         bigint temp1 = operand1;
         bigint temp2 = operand2;
-        temp1.isNeg = false;
-        temp2.isNeg = false;
+        temp1 = -temp1;
+        temp2 = -temp2;
         return temp2 < temp1;
     }
     if (!operand1.isNeg && !operand2.isNeg)
     {
         // Optimization: return true if both operands are positive
-        // and operand1 has fewer digits than operand 2.
+        // and operand1 has fewer digits than operand2.
         if (operand1.number.size() < operand2.number.size())
         {
             return true;
         }
         // Optimization: return false if both operands are positive
-        // and operand1 has more digits than operand 2.
+        // and operand1 has more digits than operand2.
         if (operand1.number.size() > operand2.number.size())
         {
             return false;

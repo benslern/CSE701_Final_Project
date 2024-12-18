@@ -5,33 +5,29 @@
 ## Overview
   
 * [Introduction](#introduction)
-  
 * [Implementation](#class-implementation)
-
 * [Constructors](#constructors)
 	* [The Default Constructor](#the-default-constructor)
 	* [The Int64_t Constructor](#the-int64_t-constructor)
 	* [The String Constructor](#the-string-constructor)
 * [Operators](#operators)
-* [Constructor Tests](#)
-	* [+ Operator Overload](#-operator-overload)
+	* [+  Operator Overload](#-operator-overload)
      * [+= Operator Overload](#-operator-overload-1)
-     * [- Operator Overload](#--operator-overload)
+     * [-  Operator Overload](#--operator-overload)
      * [-= Operator Overload](#--operator-overload-1)
-     * [* Operator Overload](#-operator-overload-2)
+     * [*  Operator Overload](#-operator-overload-2)
      * [*= Operator Overload](#-operator-overload-3)
-     * [- Operator Overload](#--operator-overload-2)
-
+     * [-  Operator Overload](#--operator-overload-2)
      * [== Operator Overload](#-operator-overload-4)
      * [!= Operator Overload](#-operator-overload-5)
-     * [< Operator Overload](#-operator-overload-6)
+     * [<  Operator Overload](#-operator-overload-6)
      * [<= Operator Overload](#-operator-overload-7)
-     * [> Operator Overload](#-operator-overload-8)
+     * [>  Operator Overload](#-operator-overload-8)
      * [>= Operator Overload](#-operator-overload-9)
      * [<< Operator Overload](#-operator-overload-10)
-     * [++ Pre Operator Overload](#-pre-operator-overload)
+     * [++ Pre  Operator Overload](#-pre-operator-overload)
      * [++ Post Operator Overload](#-post-operator-overload)
-     * [-- Pre Operator Overload](#---pre-operator-overload)
+     * [-- Pre  Operator Overload](#---pre-operator-overload)
      * [-- Post Operator Overload](#---post-operator-overload)
 * [Testing](#testing)
      * [Constructor Tests](#constructor-tests)
@@ -40,7 +36,7 @@
 
 ## Introduction
   
-This is the documentation for the Fall 2024 CSE701 final project. It is a C++ implementation of unsigned arbitrary-precision integers, bigint. It allows for the creation of integers with an arbitrarily large number of digits, and has operator overloading for the operators defined by the project outline, 
+This README is the documentation for the Fall 2024 CSE701 final project. It is a C++ implementation of signed arbitrary-precision integers: bigint. It allows for the creation of signed integers with an arbitrarily large number of digits, and has operator overloading for the operators defined by the project outline, 
   
 - Addition (`+` and `+=`)  
   
@@ -77,8 +73,16 @@ The class invariant for this variable is that every digit of the number vector m
   
 `bool isNeg;`  
 
-That class invariant of this variable is that it is true if and only if the bigint is negative.
-  
+The class invariant of this variable is that it is true if and only if the bigint is negative. The class also contains the declarations of several operator overloads that need to be friends of the bigint class. These operators must be friends because the algorithms they implement need direct access to the bigint private members. These operators are,
+
+* <<
+* ==
+* <
+* - Unary
+* + 
+* - Binary
+* *
+
 ## Constructors 
   
 The bigint class has three constructors. The default constructor, the int64_t constructor, and the std::string constructor. 
@@ -89,7 +93,9 @@ The bigint class has three constructors. The default constructor, the int64_t co
   
 **Brief:** Default Constructor. Construct a new bigint object with value 0.  
   
-The default constructor takes no arguments and creates a new bigint object with a value of 0. As this constructor takes no arguments, there are no edge cases or inputs of interest.  
+The default constructor takes no arguments and creates a new bigint object with a value of 0. As this constructor takes no arguments, there are no edge cases or inputs of interest. 
+
+The vector number contains only the uint8_t value 0. Therefore, the class invariant for the number variable is upheld. The isNeg variable is set to false. Therefore, the class invariant for the isNeg variable is also upheld.
   
 ### The int64_t Constructor  
   
@@ -99,12 +105,13 @@ The default constructor takes no arguments and creates a new bigint object with 
   
 **Param:** int64_t value  
   
-The int64_t constructor takes an int64_t argument and creates a new bigint object with the value of the int64_t argument.  Because the argument is a int64_t integer, the constructor has several edge cases and inputs of interest.
+The int64_t constructor takes an int64_t argument and creates a new bigint object with the value of the int64_t argument.  Because the argument is a int64_t integer, the constructor has several edge cases and inputs of interest. For example,
   
 ```  
 bigint input_of_interest_1(INT64_MAX);  
 bigint input_of_interest_2(INT64_MIN);  
 ```  
+
 These inputs will create bigints with the values `9223372036854775807` and `-9223372036854775808` respectively. These inputs are significant because they are the largest and smallest integers that can be stored in the int64_t argument. Any user that wants to use the int64_t constructor for bigint must ensure that the value is between these limits. If the user attempts to pass an argument outside of these bounds it will cause integer overflow and generate a bigint with an inaccurate value. It will also produce a warning. As such, integer arguments outside of this range should be avoided.  
   
 The constructor also allows to create a bigint using scientific notation provided that the input value is within the range INT64_MIN to INT64_MAX.  For example,
@@ -125,16 +132,16 @@ This bigint will have the value `0`. This input will not generate any warnings.
   
 ### The String Constructor  
   
-The string constructor takes an string argument and creates a new bigint object with the value of the string argument.  Because the argument is a string, the constructor has several edge cases and inputs of interest. The string can contain an integer with an arbitrary number of digits. This allows the string constructor to create bigints with values far larger than the limited range of the int64_t constructor. For example,
+The string constructor takes a std::string argument and creates a new bigint object with the value of the string argument. Because the argument is a string, the constructor has several edge cases and inputs of interest. The string can contain an integer with an arbitrary number of digits. This allows the string constructor to create bigints with values far larger than the limited range of the int64_t constructor. For example,
 
-`bigint input_of_interest_1("123456789098765432110293847566574839201");`
+`bigint input_of_interest_1("99999999999999999999999999999999999999999");`
 
-This input will create a bigint with the value, `123456789098765432110293847566574839201`, which is many orders of magnitude larger than INT64_MAX. The constructor allows for the string to have leading and tailing spaces, and leading zeros. For example,
+This input will create a bigint with the value, `99999999999999999999999999999999999999999`, which is many orders of magnitude larger than INT64_MAX. The constructor allows for the string to have leading and tailing spaces, and leading zeros. For example,
 
 `bigint input_of_interest_2(" -001   ");`
 `bigint input_of_interest_3("-0000");`
   
-This input will create a bigints with the values `-1` and `0`. However, the string cannot contain any symbols apart from a single '-' at the beginning to indicate a negative integer.  For example, the following inputs will generate the error, 'Error: Invalid String'
+This input will create a bigints with the values `-1` and `0`. However, the string cannot contain any symbols, apart from a single '-' at the beginning to indicate a negative integer. For example, the following inputs will generate the error, 'Error: Invalid String'.
 
 ```
 bigint input_of_interest_4("100.1234");
