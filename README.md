@@ -33,6 +33,7 @@
      * [Constructor Tests](#constructor-tests)
      * [Random Operator Tests](#random-operator-tests)
      * [Custom Operator Tests](#custom-operator-tests)
+     * [Complex_Operator_Tests](#complex-operator-tests)
 
 ## Introduction
   
