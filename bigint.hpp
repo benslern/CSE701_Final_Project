@@ -18,7 +18,7 @@ public:
     // Public members
 
     /**
-     * @brief Default Constructor. Construct a new bigint object with value of 0.
+     * @brief Default Constructor. Construct a new bigint object with value 0.
      */
     bigint()
     {
@@ -98,7 +98,7 @@ public:
     friend std::ostream &operator<<(std::ostream &, const bigint &);
     friend bool operator==(const bigint &, const bigint &);
     friend bool operator<(const bigint &, const bigint &);
-    friend bigint operator-(bigint &operand);
+    friend bigint operator-(const bigint &operand);
     friend bigint operator+(const bigint &, const bigint &);
     friend bigint operator-(const bigint &, const bigint &);
     friend bigint operator*(const bigint &, const bigint &);
@@ -314,9 +314,9 @@ bool operator>=(const bigint &operand1, const bigint &operand2)
  * @param bigint operand
  * @return bigint
  */
-bigint operator-(bigint &operand)
+bigint operator-(const bigint &operand)
 {
-    bigint zero;
+    const bigint zero;
     bigint result = operand;
     if (result != zero)
     {
@@ -476,47 +476,47 @@ bigint operator-(const bigint &operand1, const bigint &operand2)
     // equivalent form where both operands are positive
     if (operand1.isNeg && !operand2.isNeg)
     {
-        // convert (neg_op1)-(pos_op2) to -((pos_op1)+(pos_op2))
+        // convert to -((-operand1)+operand2)
         bigint temp = operand1;
-        temp.isNeg = false;
+        temp = -temp;
         temp += operand2;
         return -temp;
     }
     if (!operand1.isNeg && operand2.isNeg)
     {
-        // convert ((pos_op1)-(neg_op2)) to ((pos_op1)+(pos_op2))
+        // convert to operand1+(-operand2)
         bigint temp = operand2;
-        temp.isNeg = false;
+        temp = -temp;
         return operand1 + temp;
     }
     if (operand1.isNeg && operand2.isNeg)
     {
-        // convert ((neg_op1)-(neg_op2)) to ((pos_op2)-(pos_op1))
+        // convert to ((-operand2)-(-operand1))
         bigint temp1 = operand1;
         bigint temp2 = operand2;
-        temp1.isNeg = false;
-        temp2.isNeg = false;
+        temp1 = -temp1;
+        temp2 = -temp2;
         return temp2 - temp1;
     }
 
-    // Only compute difference when operand1 and operand2 are positive
-
-    std::vector<uint8_t> num1 = operand1.number;
-    std::vector<uint8_t> num2 = operand2.number;
-    // pad the operand number vectors with leading zeros
-    // so that they are the same length
-    while (num1.size() < num2.size())
-    {
-        num1.insert(num1.begin(), 0);
-    }
-    while (num1.size() > num2.size())
-    {
-        num2.insert(num2.begin(), 0);
-    }
-
-    std::string value = "";
+    // Only compute difference when operand1 and operand2 are positive and operand1 >= operand2
     if (operand1 >= operand2)
     {
+        std::string value = "";
+
+        std::vector<uint8_t> num1 = operand1.number;
+        std::vector<uint8_t> num2 = operand2.number;
+        // pad the operand number vectors with leading zeros
+        // so that they are the same length
+        while (num1.size() < num2.size())
+        {
+            num1.insert(num1.begin(), 0);
+        }
+        while (num1.size() > num2.size())
+        {
+            num2.insert(num2.begin(), 0);
+        }
+
         // loop through the padded numbers in reverse
         for (size_t i = num1.size(); i > 0; i--)
         {
@@ -547,20 +547,21 @@ bigint operator-(const bigint &operand1, const bigint &operand2)
         {
             value = value.substr(0, value.length() - 1);
         }
+
+        std::reverse(value.begin(), value.end());
+
+        // Because value could be a string with any number of digits,
+        // we must use the string operator to create bigint
+        bigint result(value);
+        return result;
     }
     else
     {
-        // convert ((pos_op1)-(pos_op2)) to -((pos_op2)-(pos_op1)) when op2>op1
+        // convert to -(operand2-operand1)
         bigint result = operand2 - operand1;
         return -result;
     }
 
-    std::reverse(value.begin(), value.end());
-
-    // Because value could be a string with any number of digits,
-    // we must use the string operator to create bigint
-    bigint result(value);
-    return result;
 }
 
 /**

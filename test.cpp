@@ -5,7 +5,7 @@
 #include <stdexcept>
 
 // To test each operator I created a run_operator_test function that runs
-// a given test function on all the test files from a single directory.
+// a test function argument on all the test files from a single directory.
 // The test function must take a std::vector<bigint> as its only input.
 // https://www.geeksforgeeks.org/passing-a-function-as-a-parameter-in-cpp/
 
@@ -410,6 +410,121 @@ bool basic_gt_test(const std::vector<bigint> &input)
 }
 
 /**
+ * @brief Run complex + tests. Input vector must contain three bigints.
+ * 
+ * @param std::vector<bigint> input 
+ * @return true 
+ * @return false 
+ */
+bool complex_addition_test(const std::vector<bigint> &input){
+    if (input.size() != 3)
+    {
+        throw std::invalid_argument("Invalid input size");
+    }
+
+    if((input[0] + input[1]) + input[2] != (input[0] + input[2]) + input[1]){
+        return false;
+    }
+
+    if((input[0] + input[1]) + input[2] != (input[1] + input[2]) + input[0]){
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * @brief Run complex + and - test. Input vector must contain three bigints.
+ * 
+ * @param std::vector<bigint> input 
+ * @return true 
+ * @return false 
+ */
+bool complex_addition_subtraction_test(const std::vector<bigint> &input){
+    if (input.size() != 3)
+    {
+        throw std::invalid_argument("Invalid input size");
+    }
+
+    if(((input[0] - input[1]) + input[2]) != ((input[0] + input[2]) - input[1])){
+        return false;
+    }
+    
+    if(((input[0] - input[1]) + input[2]) != ((input[2] - input[1]) + input[0])){
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * @brief Run complex - and * test. Input vector must contain three bigints.
+ * 
+ * @param std::vector<bigint> input 
+ * @return true 
+ * @return false 
+ */
+bool complex_subtraction_multiplication_test(const std::vector<bigint> &input){
+    
+    if (input.size() != 3)
+    {
+        throw std::invalid_argument("Invalid input size");
+    }
+
+    if(((input[0] - input[1]) * input[2]) != ((input[0] * input[2]) - (input[1] * input[2]))){
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * @brief Run complex + and * test. Input vector must contain three bigints.
+ * 
+ * @param std::vector<bigint> input 
+ * @return true 
+ * @return false 
+ */
+bool complex_addition_multiplication_test(const std::vector<bigint> &input){
+    
+    if (input.size() != 3)
+    {
+        throw std::invalid_argument("Invalid input size");
+    }
+
+    if(((input[0] + input[1]) * input[2]) != ((input[0] * input[2]) + (input[1] * input[2]))){
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * @brief Run complex * test. Input vector must contain three bigints.
+ * 
+ * @param std::vector<bigint> input 
+ * @return true 
+ * @return false 
+ */
+bool complex_multiplication_test(const std::vector<bigint> &input){
+
+    if (input.size() != 3)
+    {
+        throw std::invalid_argument("Invalid input size");
+    }
+
+    if ((input[0] * input[1]) * input[2] != (input[0] * input[2]) * input[1]){
+        return false;
+    }
+
+    if ((input[0] * input[1]) * input[2] != (input[1] * input[2]) * input[0]){
+        return false;
+    }
+
+    return true;
+}
+
+/**
  * @brief Run tests on the bigint String Constructor.
  * exp is a string of the expected bigint value.
  * input is a string argument for bigint.
@@ -565,8 +680,20 @@ int main()
     test_pass += run_operator_tests("./data/random_test/condition_test/gt/", &basic_gt_test, "(>) and (>=)");
     test_pass += run_operator_tests("./data/custom_test/condition_test/gt/", &basic_gt_test, "(>) and (>=)");
 
-    std::cout << "Total Passed Tests: " << test_pass << "\n";
-    std::cout << "Total Failed Tests: " << 1069 - test_pass << "\n";
+    std::cout << "Total Passed Basic Tests: " << test_pass << "\n";
+    std::cout << "Total Failed Basic Tests: " << 1069 - test_pass << "\n\n";
+
+    // Complex Tests - combinations of multiple operators
+
+    test_pass = 0;
+    test_pass += run_operator_tests("./data/complex_test/", &complex_addition_test, "(+)");
+    test_pass += run_operator_tests("./data/complex_test/", &complex_addition_subtraction_test, "(+) and (-)");
+    test_pass += run_operator_tests("./data/complex_test/", &complex_subtraction_multiplication_test, "(-) and (*)");
+    test_pass += run_operator_tests("./data/complex_test/", &complex_addition_multiplication_test, "(+) and (*)");
+    test_pass += run_operator_tests("./data/complex_test/", &complex_multiplication_test, "(*)");
+
+    std::cout << "Total Passed Complex Tests: " << test_pass << "\n";
+    std::cout << "Total Failed Complex Tests: " << 150 - test_pass << "\n";
 
     return 0;
 }
