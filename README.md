@@ -12,27 +12,27 @@
 	* [The String Constructor](#the-string-constructor)
 * [Operators](#operators)
 	* [+  Operator Overload](#-operator-overload)
-     	* [+= Operator Overload](#-operator-overload-1)
-     	* [-  Operator Overload](#--operator-overload)
-     	* [-= Operator Overload](#--operator-overload-1)
-     	* [*  Operator Overload](#-operator-overload-2)
-     	* [*= Operator Overload](#-operator-overload-3)
-     	* [-  Operator Overload](#--operator-overload-2)
-     	* [== Operator Overload](#-operator-overload-4)
-     	* [!= Operator Overload](#-operator-overload-5)
-     	* [<  Operator Overload](#-operator-overload-6)
-     	* [<= Operator Overload](#-operator-overload-7)
-     	* [>  Operator Overload](#-operator-overload-8)
-     	* [>= Operator Overload](#-operator-overload-9)
+     * [+= Operator Overload](#-operator-overload-1)
+     * [-  Operator Overload](#--operator-overload)
+     * [-= Operator Overload](#--operator-overload-1)
+     * [*  Operator Overload](#-operator-overload-2)
+     * [*= Operator Overload](#-operator-overload-3)
+     * [-  Operator Overload](#--operator-overload-2)
+     * [== Operator Overload](#-operator-overload-4)
+     * [!= Operator Overload](#-operator-overload-5)
+     * [<  Operator Overload](#-operator-overload-6)
+     * [<= Operator Overload](#-operator-overload-7)
+     * [>  Operator Overload](#-operator-overload-8)
+     * [>= Operator Overload](#-operator-overload-9)
     	* [<< Operator Overload](#-operator-overload-10)
-     	* [++ Pre  Operator Overload](#-pre-operator-overload)
-     	* [++ Post Operator Overload](#-post-operator-overload)
-     	* [-- Pre  Operator Overload](#---pre-operator-overload)
-     	* [-- Post Operator Overload](#---post-operator-overload)
+     * [++ Pre  Operator Overload](#-pre-operator-overload)
+     * [++ Post Operator Overload](#-post-operator-overload)
+     * [-- Pre  Operator Overload](#---pre-operator-overload)
+     * [-- Post Operator Overload](#---post-operator-overload)
 * [Testing](#testing)
-     	* [Constructor Tests](#constructor-tests)
-     	* [Random Operator Tests](#random-operator-tests)
-     	* [Custom Operator Tests](#custom-operator-tests)
+     * [Constructor Tests](#constructor-tests)
+     * [Random Operator Tests](#random-operator-tests)
+     * [Custom Operator Tests](#custom-operator-tests)
 
 ## Introduction
   
@@ -60,16 +60,14 @@ The bigint class contains two private members, `number` and `isNeg`. The `number
   
 `std::vector<uint8_t> number;`  
   
-The integers in the vector are used to represent the base 10 digits of the bigint. The vector is sorted from the highest order digits to the lowest order digits. Therefore, the value at `number[0]` is the highest order digit in the bigint, and the value at `number[number.size()-1]` is the lowest order. For example, the number vector for a bigint with a value of 1276 would be,  
+The integers in the vector are used to represent the base 10 digits of the bigint. The vector is sorted from the highest order digits to the lowest order digits. Therefore, the value at `number[0]` is the highest order digit in the bigint, and the value at `number[number.size()-1]` is the lowest order. For example, the `number` vector for a bigint with a value of `1276` would be,  
 
-<center>
 | index | value |
 |--|--|
 | 0 | 1 |
 | 1 | 2 |
 | 2 | 7 |
 | 3 | 6 |
-</center>
 
 The class invariant for this variable is that every digit of the number vector must be between 0 and 9. The `isNeg` variable is a boolean that represents the sign of the bigint.
   
@@ -123,7 +121,7 @@ The int64_t constructor takes an int64_t argument and creates a new bigint with 
 
 5) Reverse `number`. This ensures the digits of the bigint are in the correct order.
 
-Because the argument is a int64_t integer, the constructor has several edge cases and inputs of interest. For example,
+Because the argument for this constructor is a int64_t integer, the constructor has several edge cases and inputs of interest. For example,
   
 ```  
 bigint input_of_interest_1(INT64_MAX);  
@@ -203,7 +201,7 @@ The following sections describe the algorithms used to override the basic mathem
 
 **Return:** bigint  
   
-This operator overload is a friend of the bigint class. In order to simplify the addition algorithm, the operator overload only computes the sum of two bigints if both of those bigints are positive or both negative. If the operands have different signs, then they are handled by converting them to mathematically equivalent equations using the - operators.
+This operator overload is a friend of the bigint class because it requires access to the operands private members. Therefore the algorithm it implements must ensure the class invariants are upheld. In order to simplify the addition algorithm, the operator overload only computes the sum of two bigints if both of those bigints are positive or both negative. If the operands have different signs, then they are handled by converting them to mathematically equivalent equations using the - operators.
 
 * operand1 is negative and operand2 is positive. The function returns the value operand2-(-operand1). 
 * operand1 is positive and operand2 is negative. The function returns the value operand1-(-operand2).
@@ -222,7 +220,7 @@ When both bigints are both positive or negative, the function uses the following
 
 6) Add a '-' to the string if the operands being added are both negative.
 
-7) Finally, reverse the string and use the string constructor to create a new bigint with the string constructor. Return the new bigint. The string operator must be used because bigints can have values far greater than the limit of the int64_t constructor. 
+7) Finally, reverse the string and use the string constructor to create a new bigint with the string constructor. Return the new bigint. The string operator must be used because the bigints being added can have values far greater than the limit of the int64_t constructor. 
   
 ### += Operator Overload  
   
@@ -250,14 +248,14 @@ The operator takes to two operands as input. Only the second operator is constan
   
 **Return:** bigint  
   
-This operator overload is a friend of the bigint class. In order to simplify the subtraction algorithm, the operator overload only computes the differences of two bigints if both of those bigints are positive and operand1 >= operand2. If either operand is negative, then they are handled by converting them to mathematically equivalent equations using the + and - operators.
+This operator overload is a friend of the bigint class. Therefore, the algorithm it implements must ensure the class invariants are upheld. In order to simplify the subtraction algorithm, the operator overload only computes the differences of two bigints if both of those bigints are positive and operand1 >= operand2. If either operand is negative, or operand1 < operand2, then they are handled by converting them to mathematically equivalent equations using the + and - operators.
 
 * operand1 is negative and operand2 is positive. The function returns the value -((-operand1)+operand2). 
 * operand1 is positive and operand2 is negative. The function returns the value operand1+(-operand2).
 * operand1 and operand2 are negative. The function returns the value ((-operand2)-(-operand1)).
 * operand1 and operand2 are negative, and operand1 < operand2. The function returns the value -(operand2-operand1).
 
-When both bigints are both positive and operand1 >= operand2, the function uses the following algorithm to calculate the sum. Additionally, because of these conditions the difference is always positive and so the resulting bigint always has a `isNeg` that is true. This ensures the `isNeg` class invariant is upheld.
+When both bigints are both positive and operand1 >= operand2, the function uses the following algorithm to calculate the sum. Additionally, because of these conditions the difference is always positive and so the resulting bigint always has a `isNeg` that is false. This ensures the `isNeg` class invariant is upheld.
 
 1) If the numbers have different numbers of digits, then the algorithm pads the smaller number with leading zeros. By doing this, the algorithm ensures the digits of the numbers are index aligned with digits of the same order. For example, given the numbers `123` and `56`. If the algorithm accessed the digit at `number[1]`, the digit of the first number would represent a value of 20, whereas the digit of the second number would represent a value of 6. By inserting a leading zero and changing the second bigint vector to `056`, the digit at `number[1]` now becomes 50, and so is of equivalent order. Additionally, create a string `value` that will represent the digits of the new bigint.
   
@@ -295,17 +293,17 @@ The operator takes to two operands as input. Only the second operator is constan
   
 **Return:** bigint  
   
-Loop through the digits of the two operands using nested loops. 
+This operator overload is a friend of the bigint class. Therefore, the algorithm it implements must ensure the class invariants are upheld. The operator implements the following algorithm.
 
-Calculate the product of the two selected digits and convert the result to a string. Add zeros to the string such that the number of zeros is equal to the sum of the order of the digits. 
+1) Create a bigint 'result' using the default constructor and loop through the digits of the two operands using nested loops. 
 
-Using the string constructor create a new temporary bigint and add it two the original `result` bigint.
+2) Within the loop, calculate the product of the two selected digits and convert the result to a string. 
 
-Set the `isNeg` value to true if only one operand is negative. This ensures the class invariant of `isNeg` is upheld.
-  
-FULL DESCRIPTION OF ALGORITHM  
-  
-  
+4) Add zeros to the string such that the number of zeros is equal to the sum of the order of the digits. 
+
+5) Using the string constructor create a new temporary bigint and add it two the original `result` bigint. While the product of the digits may be greater than 9, the product is converted to a string using concatenation and so each character of the string must be between 0 and 9. This ensures the class invariant is upheld.
+
+6) Set the `isNeg` value to true if only one operand is negative. This ensures the class invariant of `isNeg` is upheld.
   
 ### *= Operator Overload  
   
@@ -519,19 +517,24 @@ The algorithm for the -- postfix operator begins by creating a copy of the opera
   
 ## Testing  
   
-The bigint class and associated operators are tested in three ways. Constructor tests, random operator tests, and custom operator tests. The goal is to conduct comprehensive tests on each component of the bigint implementation.  
+The bigint class and associated operators are tested in four ways. Constructor tests, random operator basic tests, custom operator basic tests, and random complex operator tests. The goal is to conduct comprehensive tests on each component of the bigint implementation.  
   
 ### Constructor Tests 
 
-The constructor tests are used to ensure the constructors work for a comprehensive selection of edge cases. These edge cases are based on the edge cases identified in the [Constructors](#constructors) descriptions.
+The constructor tests are used to ensure the constructors work for a comprehensive selection of edge cases. These edge cases are based on the edge cases identified in the [Constructors](#constructors) descriptions. The constructor tests operate by taking either a int64_t or std::string input argument and create a bigint using that argument. It then outputs the expected value of the bigint and the actual value of the bigint using the `<<` operator. This demonstrates that constructors are able to handle each of the intended edge cases. Additionally, these tests serve as validation for the `<<` stream operator.
   
 ### Random Operator Tests  
   
-The random operator tests are 
-The final test files submitted with the project used bigints with random values between 50 digits and 100 digits. This was done to speed up the tests, particularly the multiplication tests which are quite slow for bigints with a large number of digits. However, the code was stress tested for random values up to several thousand digits. It successfully passed all of the tests. Each test file contains one test. The are 30 random tests for each possible combination of positive or negative signs for the given operand. For example, the random addition tests have 30 tests for each of the following: positive bigint + positive bigint, positive bigint + negative bigint, negative bigint + positive bigint, and negative bigint + negative bigint.
+Each test file in the data directory contains one test. The files are formatted so they have one number per line, and have 2 or 3 numbers per file, depending on the structure of the specific test. The are 30 random tests for each possible combination of positive or negative signs for the given operand. For example, the random addition tests takes two operands and so have 30 tests for each of the following: positive bigint + positive bigint, positive bigint + negative bigint, negative bigint + positive bigint, and negative bigint + negative bigint. The three numbers in the file will be two positive or negative random numbers and a third number that is the sum of the first two. This technique is repeated for each operator.
+
+The final test files submitted with the project used bigints with random values between 50 digits and 100 digits. This was done to speed up the tests, particularly the multiplication tests which are quite slow for bigints with a large number of digits. However, the code was stress tested for random values up to several thousand digits. It successfully passed all of the tests. 
+
+To execute a test, the user calls the run_operator_tests function by passing it the directory to read test files from, the test function to execute on the test files, and a string describing which operators are being tested. The run_operator_tests function reads in the numbers from each test file from the directory. The function then uses these numbers to call the provided test function and outputs the number of passed tests.
   
 ### Custom Operator Tests  
   
 The custom operator tests function in the same way as the random operator tests, except that the values in the test files were not randomly generated. These values were selected because they represent edge cases. Some of these edge cases are discussed in the operator algorithm descriptions, the remaining were chosen because they represent specific errors that were encountered during the development process.  
-Some specific examples  
-stress test the `+`, `+=`, `-`, and `-=` operators for bigints with 20,000 digits. This was done by using the first 20,000 digits of pi which are available online, [http://www.eveandersson.com/pi/digits/pi-digits?n_decimals_to_display=20000&breakpoint=100](http://www.eveandersson.com/pi/digits/pi-digits?n_decimals_to_display=20000&breakpoint=100).
+
+### Complex Operator Tests
+
+The complex operator tests operate the same way as the random and custom operator tests, except that the tests they execute utilize multiple operators. These tests demonstrate that the operators are consistent when used in more complex equations than the basic operator tests.
