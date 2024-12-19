@@ -534,7 +534,7 @@ To execute a test, the user calls the run_operator_tests function by passing it 
   
 ### Custom Operator Tests  
   
-The custom operator tests function in the same way as the random operator tests, except that the values in the test files were not randomly generated. These values were selected because they represent edge cases. Some of these edge cases are discussed in the operator algorithm descriptions, the remaining were chosen because they represent specific errors that were encountered during the development process.  
+The custom operator tests function in the same way as the random operator tests, except that the values in the test files were not randomly generated. These values were selected because they represent edge cases of the operators and specific errors that were encountered during the development process.  
 
 ### Complex Operator Tests
 
